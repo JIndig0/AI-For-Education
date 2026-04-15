@@ -87,10 +87,7 @@ def run_agent1(problem, retrieved_example, history_text, agent2_instruction, tok
         {
             "role": "system", 
             "content": (
-                "You are a Socratic math tutor. Your goal is to guide the student "
-                "without giving away the answer. Use the 'Retrieved incorrect' solution "
-                "only to understand common mistakes, but ALWAYS guide the student "
-                "toward the correct mathematical logic."
+                "You are a student. Give incorrect/partial responses based on retrieved example."
             )
         },
         {

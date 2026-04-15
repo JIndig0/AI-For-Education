@@ -1,5 +1,3 @@
-import numpy as np
-import torch
 import streamlit as st
 import pandas as pd
 import json
@@ -7,6 +5,8 @@ from datasets import load_dataset
 from sentence_transformers import SentenceTransformer
 import chromadb
 from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+import numpy as np
 import torch
 
 @st.cache_resource
@@ -28,6 +28,7 @@ def load_generation_model():
 def setup_chromadb(chunks, embeddings):
     client = chromadb.Client()
     collection = client.create_collection(name="mathdial", metadata={"hnsw:space": "cosine"})
+    
     documents = [chunk["text"] for chunk in chunks]
     metadatas = [chunk["metadata"] for chunk in chunks]
     ids = [str(i) for i in range(len(chunks))]
@@ -87,7 +88,10 @@ def run_agent1(problem, retrieved_example, history_text, agent2_instruction, tok
         {
             "role": "system", 
             "content": (
-                "You are a student. Give incorrect/partial responses based on retrieved example."
+                "You are a Socratic math tutor. Your goal is to guide the student "
+                "without giving away the answer. Use the 'Retrieved incorrect' solution "
+                "only to understand common mistakes, but ALWAYS guide the student "
+                "toward the correct mathematical logic."
             )
         },
         {
@@ -99,6 +103,7 @@ def run_agent1(problem, retrieved_example, history_text, agent2_instruction, tok
 
 def format_history(history):
     return "\n".join(f"{m['role']}: {m['content']}" for m in history)
+
 
 if __name__ == "__main__":
     st.set_page_config(page_title="AI Math Tutor", layout="wide")
